@@ -62,8 +62,20 @@ curl -k -X POST https://localhost:5001/api/payments \
 Notes & guidance
 
 The code uses UTC for CreatedAt and reference date. If you need local-time references, adjust DateTime.UtcNow usage.
+
 For production and high concurrency, replace the SQLite + DailySequence approach with a DB-native sequence or a stored procedure to guarantee atomic sequence generation at scale.
+
 Add authentication/authorization before exposing to the public.
+
+Testing idempotency / sample flow
+
+1. POST with clientRequestId = GUID-A → response returns a payment with Reference PAY-YYYYMMDD-0001.
+
+2. POST again with same clientRequestId = GUID-A → server returns the same payment (no new DB row).
+
+3. POST with clientRequestId = GUID-B → returns PAY-YYYYMMDD-0002 for same day.
+
+4. Update / Delete endpoints behave as normal.
     
 
 
