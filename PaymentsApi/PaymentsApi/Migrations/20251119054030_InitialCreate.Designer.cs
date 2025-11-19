@@ -11,7 +11,7 @@ using PaymentsApi.Data;
 namespace PaymentsApi.Migrations
 {
     [DbContext(typeof(PaymentsDbContext))]
-    [Migration("20251119044535_InitialCreate")]
+    [Migration("20251119054030_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -19,6 +19,20 @@ namespace PaymentsApi.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
+
+            modelBuilder.Entity("PaymentsApi.Models.DailySequence", b =>
+                {
+                    b.Property<string>("DateKey")
+                        .HasMaxLength(10)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("LastSequence")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("DateKey");
+
+                    b.ToTable("DailySequences");
+                });
 
             modelBuilder.Entity("PaymentsApi.Models.Payment", b =>
                 {

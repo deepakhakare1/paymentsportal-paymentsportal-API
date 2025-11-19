@@ -12,6 +12,18 @@ namespace PaymentsApi.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "DailySequences",
+                columns: table => new
+                {
+                    DateKey = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false),
+                    LastSequence = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DailySequences", x => x.DateKey);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Payments",
                 columns: table => new
                 {
@@ -43,6 +55,9 @@ namespace PaymentsApi.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "DailySequences");
+
             migrationBuilder.DropTable(
                 name: "Payments");
         }

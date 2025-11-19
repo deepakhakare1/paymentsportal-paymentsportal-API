@@ -35,24 +35,10 @@ var app = builder.Build();
 // Ensure DB created / apply migrations at startup (safe for dev)
 using (var scope = app.Services.CreateScope())
 {
-    var context = scope.ServiceProvider.GetRequiredService<PaymentsDbContext>();
-    if (context.Database.EnsureCreated())
-    {
-        Console.WriteLine("Database and Payments table created using EnsureCreated.");
-    }
-   /* try
-    {
-        // Applies any pending migrations, creating the database if it doesn't exist.
-        context.Database.Migrate();
-        Console.WriteLine("Database migration successful.");
-    }
-    catch (Exception ex)
-    {
-        // Log the failure to apply migrations
-        Console.WriteLine($"Error applying migrations: {ex.Message}");
-        // In a real app, you would use ILogger here.
-    } */
+    var db = scope.ServiceProvider.GetRequiredService<PaymentsDbContext>();
+    db.Database.Migrate();
 }
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

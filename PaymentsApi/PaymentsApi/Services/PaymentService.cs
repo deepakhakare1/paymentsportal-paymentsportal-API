@@ -30,9 +30,23 @@ namespace PaymentsApi.Services
             {
                 var dateKey = DateTime.UtcNow.ToString("yyyyMMdd"); // server UTC date used for reference
 
-                      
+                // Load or create DailySequence row
+                var seq = await _db.DailySequences
+                    .FirstOrDefaultAsync(s => s.DateKey == dateKey);
 
-                var seqNum = 1;
+                if (seq == null)
+                {
+                    seq = new DailySequence { DateKey = dateKey, LastSequence = 0 };
+                    _db.DailySequences.Add(seq);
+                    await _db.SaveChangesAsync();
+                }
+
+                // Increment sequence
+                seq.LastSequence += 1;
+                _db.DailySequences.Update(seq);
+                await _db.SaveChangesAsync();
+
+                var seqNum = seq.LastSequence;
                 var reference = $"PAY-{DateTime.UtcNow:yyyyMMdd}-{seqNum.ToString().PadLeft(4, '0')}";
 
                 var payment = new Payment
@@ -62,24 +76,41 @@ namespace PaymentsApi.Services
             }
         }
 
-        public Task<bool> DeleteAsync(Guid id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var payment = await _db.Payments.FindAsync(id);
+            if (payment == null) return false;
+            _db.Payments.Remove(payment);
+            await _db.SaveChangesAsync();
+            return true;
         }
 
-        public Task<IEnumerable<Payment>> GetAllAsync()
+        public async Task<IEnumerable<Payment>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _db.Payments.AsNoTracking()
+                .OrderByDescending(p => p.CreatedAt)
+                .ToListAsync();
         }
 
-        public Task<Payment?> GetByIdAsync(Guid id)
+        public async Task<Payment?> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await _db.Payments.FindAsync(id);
         }
 
-        public Task<Payment?> UpdateAsync(Guid id, CreatePaymentRequest request)
+        public async Task<Payment?> UpdateAsync(Guid id, CreatePaymentRequest request)
         {
-            throw new NotImplementedException();
+            var payment = await _db.Payments.FindAsync(id);
+            if (payment == null) return null;
+
+            if (request.Amount <= 0) throw new ArgumentException("Amount must be > 0");
+
+            // Do not allow clientRequestId or reference or createdAt edits (business choice)
+            payment.Amount = request.Amount;
+            payment.Currency = request.Currency;
+
+            _db.Payments.Update(payment);
+            await _db.SaveChangesAsync();
+            return payment;
         }
     }
 }

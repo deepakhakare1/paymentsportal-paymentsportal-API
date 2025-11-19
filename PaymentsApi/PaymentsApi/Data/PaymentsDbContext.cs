@@ -7,6 +7,7 @@ namespace PaymentsApi.Data
         public PaymentsDbContext(DbContextOptions<PaymentsDbContext> options) : base(options) { }
 
         public DbSet<Payment> Payments { get; set; } = null!;
+        public DbSet<DailySequence> DailySequences { get; set; } = null!;
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Payment>(b =>
@@ -19,7 +20,12 @@ namespace PaymentsApi.Data
                 b.Property(p => p.Currency).HasMaxLength(3).IsRequired();
                 b.Property(p => p.Amount).HasColumnType("decimal(18,2)").IsRequired();
             });
-            
+            modelBuilder.Entity<DailySequence>(b =>
+            {
+                b.HasKey(d => d.DateKey);
+                b.Property(d => d.DateKey).HasMaxLength(10);
+            });
+
         }
     }
 }

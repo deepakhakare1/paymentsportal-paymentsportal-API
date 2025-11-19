@@ -41,4 +41,45 @@ public class PaymentsController : ControllerBase
             return StatusCode(500, new { error = "Internal server error" });
         }
     }
+
+    /// <summary>
+    /// Get all payments
+    /// </summary>
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var payments = await _service.GetAllAsync();
+        var dto = payments.Select(PaymentResponse.FromModel);
+        return Ok(dto);
+    }
+
+    /// <summary>
+    /// Update payment (amount, currency).
+    /// </summary>
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] CreatePaymentRequest request)
+    {
+        if (!ModelState.IsValid) return ValidationProblem(ModelState);
+        try
+        {
+            var updated = await _service.UpdateAsync(id, request);
+            if (updated == null) return NotFound();
+            return Ok(PaymentResponse.FromModel(updated));
+        }
+        catch (ArgumentException aex)
+        {
+            return BadRequest(new { error = aex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Delete payment
+    /// </summary>
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete([FromRoute] Guid id)
+    {
+        var deleted = await _service.DeleteAsync(id);
+        if (!deleted) return NotFound();
+        return NoContent();
+    }
 }
