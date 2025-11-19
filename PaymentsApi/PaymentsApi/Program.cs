@@ -36,8 +36,11 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<PaymentsDbContext>();
-
-    try
+    if (context.Database.EnsureCreated())
+    {
+        Console.WriteLine("Database and Payments table created using EnsureCreated.");
+    }
+   /* try
     {
         // Applies any pending migrations, creating the database if it doesn't exist.
         context.Database.Migrate();
@@ -48,7 +51,7 @@ using (var scope = app.Services.CreateScope())
         // Log the failure to apply migrations
         Console.WriteLine($"Error applying migrations: {ex.Message}");
         // In a real app, you would use ILogger here.
-    }
+    } */
 }
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
