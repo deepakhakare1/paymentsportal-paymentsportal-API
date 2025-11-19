@@ -60,6 +60,7 @@ curl -k -X POST https://localhost:5001/api/payments \
 
    
 Notes & guidance
+
 The code uses UTC for CreatedAt and reference date. If you need local-time references, adjust DateTime.UtcNow usage.
 For production and high concurrency, replace the SQLite + DailySequence approach with a DB-native sequence or a stored procedure to guarantee atomic sequence generation at scale.
 Add authentication/authorization before exposing to the public.
