@@ -9,6 +9,12 @@ The system allows users to view, add, edit, and delete payments, with strong bac
 This is the backend API for the Payments Portal assignment.
 It provides CRUD endpoints for payments with idempotency (clientRequestId) and per-day sequential reference generation.
 
+Architecture diagram
+
+<img width="956" height="139" alt="image" src="https://github.com/user-attachments/assets/557cf7cf-dd70-46cc-98b6-cd11a0558503" />
+
+
+
 ## Features
 - POST /api/payments : create payment (idempotent by clientRequestId)
 - GET /api/payments : list payments
