@@ -32,7 +32,7 @@ Architecture diagram
 
 1. Restore packages(using command line tool or Powershell terminal):
    
-   dotnet restoredotnet restore
+   dotnet restore
 
 2. Create initial migration (if you want explicit migrations):
 
