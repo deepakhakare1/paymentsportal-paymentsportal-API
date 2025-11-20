@@ -82,4 +82,15 @@ public class PaymentsController : ControllerBase
         if (!deleted) return NotFound();
         return NoContent();
     }
+
+    // <summary>
+    /// Get id specific payments
+    /// </summary>
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> Get([FromRoute] Guid id)
+    {
+        var payments = await _service.GetByIdAsync(id);
+        var dto = payments;
+        return Ok(dto);
+    }
 }
