@@ -15,6 +15,12 @@ Architecture diagram
 
 
 
+DB schema summary:
+
+Payments table: Id (GUID PK), Reference (string unique), Amount (decimal), Currency (string), CreatedAt (DateTime), ClientRequestId (string unique)
+
+DailySequences table: DateKey PK, LastSequence int
+
 ## Features
 - POST /api/payments : create payment (idempotent by clientRequestId)
 - GET /api/payments : list payments
